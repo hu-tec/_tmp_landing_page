@@ -4,7 +4,7 @@ import { Sparkles, GraduationCap, ShieldCheck } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-navy-900 text-white pt-32 pb-24 md:pt-40 md:pb-32">
+    <section className="relative overflow-hidden bg-navy-900 text-white pt-40 pb-24 md:pt-48 md:pb-32">
       <div className="absolute inset-0 bg-grid opacity-[0.15]" />
       <div className="absolute inset-0 bg-gradient-to-b from-navy-900 via-navy-900/90 to-navy-950" />
       <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-burgundy-700/20 blur-3xl" />

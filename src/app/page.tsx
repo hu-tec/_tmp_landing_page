@@ -10,6 +10,8 @@ import { Recruitment } from "@/components/sections/Recruitment";
 import { Strengths } from "@/components/sections/Strengths";
 import { Expansion } from "@/components/sections/Expansion";
 import { FaqTeaser } from "@/components/sections/FaqTeaser";
+import { CommunityInline } from "@/components/sections/CommunityInline";
+import { PlanCompare } from "@/components/sections/PlanCompare";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
@@ -27,6 +29,8 @@ export default function Home() {
         <Strengths />
         <Expansion />
         <FaqTeaser />
+        <CommunityInline />
+        <PlanCompare />
         <Contact />
       </main>
       <Footer />

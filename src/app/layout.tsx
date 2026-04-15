@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
+import { PlanProvider } from "@/components/plan/PlanContext";
+import { PlanSwitcher } from "@/components/plan/PlanSwitcher";
 
 const noto = Noto_Sans_KR({
   subsets: ["latin"],
@@ -33,7 +35,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className={noto.variable}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <PlanProvider>
+          <PlanSwitcher />
+          {children}
+        </PlanProvider>
+      </body>
     </html>
   );
 }

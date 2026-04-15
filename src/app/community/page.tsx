@@ -13,7 +13,7 @@ export default function CommunityPage() {
   return (
     <>
       <Header />
-      <main className="pt-24 md:pt-32 pb-24 bg-parchment min-h-screen">
+      <main className="pt-36 md:pt-44 pb-24 bg-parchment min-h-screen">
         <div className="mx-auto max-w-6xl px-5 md:px-8">
           <Link
             href="/"
