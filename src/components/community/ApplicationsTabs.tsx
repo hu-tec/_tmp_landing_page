@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { cn, withBase } from "@/lib/utils";
 import { WorkStudioBrowser } from "@/components/work-studio/WorkStudioBrowser";
-import { RecruitApplyForm } from "@/components/applications/RecruitApplyForm";
 
 type Slug =
   | "recruit"
@@ -18,7 +17,7 @@ type Slug =
   | "expert"
   | "translator"
   | "ws-catalog";
-type Kind = "iframe" | "workstudio" | "native";
+type Kind = "iframe" | "workstudio";
 
 interface FormDef {
   slug: Slug;
@@ -36,9 +35,9 @@ const FORMS: FormDef[] = [
     label: "모집 신청",
     short: "모집",
     description:
-      "AI 방과후 영어교사 양성과정 기수 모집을 위한 공식 신청서입니다. 기수(5/6/8월) · 강의장 · TESOL 이수 여부 · AI 활용 경험 등을 받아 담당자에게 전달되며, TESOL 졸업생 30% 할인도 여기서 접수됩니다.",
+      "기존 TIMES MEDIA 통합 신청서를 그대로 임베드했습니다 (수업신청 · 레벨테스트 · 설명회 · 테스트 TIP · 1:1문의 유형 선택, TESOL · 프롬프트 · AI 번역 · AI윤리 · ITT 코스 선택). 관리자 대시보드 탭도 포함.",
     Icon: Megaphone,
-    kind: "native",
+    kind: "iframe",
     badge: "기수 모집",
   },
   {
@@ -124,7 +123,7 @@ export function ApplicationsTabs() {
         aria-label="신청서 종류"
         className="flex flex-wrap gap-2 border-b border-navy-100 pb-3"
       >
-        {FORMS.map(({ slug, label, short, Icon, badge, kind }) => {
+        {FORMS.map(({ slug, label, short, Icon, badge }) => {
           const selected = active === slug;
           const recruit = slug === "recruit";
           return (
@@ -152,10 +151,10 @@ export function ApplicationsTabs() {
                   className={cn(
                     "ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
                     selected
-                      ? kind === "native"
+                      ? recruit
                         ? "bg-white text-burgundy-700"
                         : "bg-emerald-400 text-emerald-950"
-                      : kind === "native"
+                      : recruit
                         ? "bg-burgundy-700 text-white"
                         : "bg-emerald-100 text-emerald-700"
                   )}
@@ -195,10 +194,8 @@ export function ApplicationsTabs() {
               loading="lazy"
             />
           </div>
-        ) : current.kind === "workstudio" ? (
-          <WorkStudioBrowser />
         ) : (
-          <RecruitApplyForm />
+          <WorkStudioBrowser />
         )}
       </div>
 
