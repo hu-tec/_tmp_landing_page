@@ -8,9 +8,9 @@ import {
   Scale,
 } from "lucide-react";
 import { cn, withBase } from "@/lib/utils";
-import { WorkStudioForm } from "@/components/work-studio/WorkStudioForm";
+import { WorkStudioBrowser } from "@/components/work-studio/WorkStudioBrowser";
 
-type Slug = "instructor" | "expert" | "translator" | "ws-ai-ethics-expert";
+type Slug = "instructor" | "expert" | "translator" | "ws-catalog";
 type Kind = "iframe" | "workstudio";
 
 interface FormDef {
@@ -52,11 +52,11 @@ const FORMS: FormDef[] = [
     kind: "iframe",
   },
   {
-    slug: "ws-ai-ethics-expert",
-    label: "AI윤리 전문가",
-    short: "AI윤리",
+    slug: "ws-catalog",
+    label: "Work Studio 모듈",
+    short: "WS 모듈",
     description:
-      "Work Studio에서 생성·수정되는 AI 윤리 전문가 신청서를 실시간 API로 불러와 그대로 렌더링합니다. 제출 데이터는 Work Studio DB에 바로 저장되며, 설정 새로고침 버튼으로 Work Studio 수정 내용을 즉시 반영해 확인할 수 있습니다.",
+      "Work Studio에서 생성·수정되는 신청서 모듈 19종(hutechc·AI윤리·TESOL × 학생·강사·전문가×part1/2 및 apply 래퍼)을 실시간 API로 불러와 그대로 렌더링합니다. 사이트 · 역할 · phase 조합으로 전체 카탈로그를 탐색하고, 각 모듈에서 더미 데이터 제출·라운드트립 확인까지 바로 수행할 수 있습니다.",
     Icon: Scale,
     kind: "workstudio",
     badge: "Work Studio",
@@ -141,7 +141,7 @@ export function ApplicationsTabs() {
             />
           </div>
         ) : (
-          <WorkStudioForm />
+          <WorkStudioBrowser />
         )}
       </div>
 

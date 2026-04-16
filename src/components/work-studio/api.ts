@@ -1,5 +1,7 @@
-export const WORK_STUDIO_API_BASE =
+export const DIRECT_API_BASE =
   process.env.NEXT_PUBLIC_WORK_STUDIO_API ?? "http://54.116.15.136";
+
+export const GET_PROXY_PREFIX = "https://api.allorigins.win/raw?url=";
 
 export type FieldType =
   | "text"
@@ -73,15 +75,24 @@ export interface ApplicationRecord {
   created_at: string;
 }
 
+export function isHttpsContext(): boolean {
+  return typeof window !== "undefined" && window.location.protocol === "https:";
+}
+
+function getUrl(targetUrl: string): string {
+  if (isHttpsContext()) {
+    return `${GET_PROXY_PREFIX}${encodeURIComponent(targetUrl)}`;
+  }
+  return targetUrl;
+}
+
 export async function fetchFormConfig(
   site: string,
   formId: string,
   phase: "part1" | "part2"
 ): Promise<FormConfig> {
-  const res = await fetch(
-    `${WORK_STUDIO_API_BASE}/api/form-config/${site}/${formId}?phase=${phase}`,
-    { cache: "no-store" }
-  );
+  const url = `${DIRECT_API_BASE}/api/form-config/${site}/${formId}?phase=${phase}`;
+  const res = await fetch(getUrl(url), { cache: "no-store" });
   if (!res.ok) throw new Error(`form-config ${phase} HTTP ${res.status}`);
   return res.json();
 }
@@ -89,7 +100,9 @@ export async function fetchFormConfig(
 export async function submitApplication(
   payload: SubmitPayload
 ): Promise<SubmitResult> {
-  const res = await fetch(`${WORK_STUDIO_API_BASE}/api/applications`, {
+  // Direct POST — public proxies do not reliably forward request body,
+  // so we accept the Mixed Content limitation on HTTPS deployments.
+  const res = await fetch(`${DIRECT_API_BASE}/api/applications`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -98,12 +111,9 @@ export async function submitApplication(
   return res.json();
 }
 
-export async function getApplication(
-  id: number
-): Promise<ApplicationRecord> {
-  const res = await fetch(`${WORK_STUDIO_API_BASE}/api/applications/${id}`, {
-    cache: "no-store",
-  });
+export async function getApplication(id: number): Promise<ApplicationRecord> {
+  const url = `${DIRECT_API_BASE}/api/applications/${id}`;
+  const res = await fetch(getUrl(url), { cache: "no-store" });
   if (!res.ok) throw new Error(`get HTTP ${res.status}`);
   return res.json();
 }
