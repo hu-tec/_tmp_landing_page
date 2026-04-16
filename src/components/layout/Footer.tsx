@@ -25,6 +25,7 @@ export function Footer() {
             <li><a className="hover:text-white" href="#program">과정 구성</a></li>
             <li><a className="hover:text-white" href="#revenue">수익 구조</a></li>
             <li><a className="hover:text-white" href="#recruitment">모집 계획</a></li>
+            <li><Link className="hover:text-white" href="/applications">신청서</Link></li>
             <li><Link className="hover:text-white" href="/community">커뮤니티</Link></li>
           </ul>
         </div>
