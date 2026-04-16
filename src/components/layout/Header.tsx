@@ -38,12 +38,12 @@ export function Header() {
               {n.label}
             </Link>
           ))}
-          <a
-            href="#recruitment"
+          <Link
+            href="/applications#recruit"
             className="rounded-full bg-burgundy-700 text-white text-sm font-semibold px-4 py-2 hover:bg-burgundy-800"
           >
             모집 신청
-          </a>
+          </Link>
         </nav>
         <button
           onClick={() => setOpen((v) => !v)}
@@ -66,13 +66,13 @@ export function Header() {
                 {n.label}
               </Link>
             ))}
-            <a
-              href="#recruitment"
+            <Link
+              href="/applications#recruit"
               onClick={() => setOpen(false)}
               className="mt-2 rounded-full bg-burgundy-700 text-white text-sm font-semibold px-4 py-2 text-center"
             >
               모집 신청
-            </a>
+            </Link>
           </div>
         </div>
       )}

@@ -1,17 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Briefcase,
   ExternalLink,
   GraduationCap,
   Languages,
   Scale,
+  Megaphone,
 } from "lucide-react";
 import { cn, withBase } from "@/lib/utils";
 import { WorkStudioBrowser } from "@/components/work-studio/WorkStudioBrowser";
+import { RecruitApplyForm } from "@/components/applications/RecruitApplyForm";
 
-type Slug = "instructor" | "expert" | "translator" | "ws-catalog";
-type Kind = "iframe" | "workstudio";
+type Slug =
+  | "recruit"
+  | "instructor"
+  | "expert"
+  | "translator"
+  | "ws-catalog";
+type Kind = "iframe" | "workstudio" | "native";
 
 interface FormDef {
   slug: Slug;
@@ -25,11 +32,21 @@ interface FormDef {
 
 const FORMS: FormDef[] = [
   {
+    slug: "recruit",
+    label: "모집 신청",
+    short: "모집",
+    description:
+      "AI 방과후 영어교사 양성과정 기수 모집을 위한 공식 신청서입니다. 기수(5/6/8월) · 강의장 · TESOL 이수 여부 · AI 활용 경험 등을 받아 담당자에게 전달되며, TESOL 졸업생 30% 할인도 여기서 접수됩니다.",
+    Icon: Megaphone,
+    kind: "native",
+    badge: "기수 모집",
+  },
+  {
     slug: "instructor",
     label: "강사 지원서",
     short: "강사",
     description:
-      "초등 방과후 영어 + AI 강사 양성과정 지원자용 신청서. 출력형 1장 레이아웃 + 관리 대시보드 포함.",
+      "초등 방과후 영어 + AI 강사 양성과정 지원자용 1장 출력형 신청서.",
     Icon: GraduationCap,
     kind: "iframe",
   },
@@ -56,15 +73,44 @@ const FORMS: FormDef[] = [
     label: "Work Studio 모듈",
     short: "WS 모듈",
     description:
-      "Work Studio에서 생성·수정되는 신청서 모듈 19종(hutechc·AI윤리·TESOL × 학생·강사·전문가×part1/2 및 apply 래퍼)을 실시간 API로 불러와 그대로 렌더링합니다. 사이트 · 역할 · phase 조합으로 전체 카탈로그를 탐색하고, 각 모듈에서 더미 데이터 제출·라운드트립 확인까지 바로 수행할 수 있습니다.",
+      "Work Studio에서 생성·수정되는 신청서 모듈 19종(hutechc·AI윤리·TESOL × 학생·강사·전문가×part1/2 및 apply 래퍼)을 실시간 API로 불러와 그대로 렌더링합니다. 모듈 활성화 정책은 추후 확정.",
     Icon: Scale,
     kind: "workstudio",
     badge: "Work Studio",
   },
 ];
 
+const VALID_SLUGS: Slug[] = FORMS.map((f) => f.slug);
+
+function readHashSlug(): Slug | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.location.hash.replace(/^#/, "");
+  return (VALID_SLUGS as string[]).includes(raw) ? (raw as Slug) : null;
+}
+
 export function ApplicationsTabs() {
-  const [active, setActive] = useState<Slug>("instructor");
+  const [active, setActive] = useState<Slug>("recruit");
+
+  useEffect(() => {
+    const sync = () => {
+      const s = readHashSlug();
+      if (s) setActive(s);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
+  const select = (s: Slug) => {
+    setActive(s);
+    if (typeof window !== "undefined") {
+      const next = `#${s}`;
+      if (window.location.hash !== next) {
+        history.replaceState(null, "", `${window.location.pathname}${window.location.search}${next}`);
+      }
+    }
+  };
+
   const current = FORMS.find((f) => f.slug === active)!;
   const iframeSrc =
     current.kind === "iframe"
@@ -78,19 +124,24 @@ export function ApplicationsTabs() {
         aria-label="신청서 종류"
         className="flex flex-wrap gap-2 border-b border-navy-100 pb-3"
       >
-        {FORMS.map(({ slug, label, short, Icon, badge }) => {
+        {FORMS.map(({ slug, label, short, Icon, badge, kind }) => {
           const selected = active === slug;
+          const recruit = slug === "recruit";
           return (
             <button
               key={slug}
               role="tab"
               aria-selected={selected}
-              onClick={() => setActive(slug)}
+              onClick={() => select(slug)}
               className={cn(
                 "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-colors",
                 selected
-                  ? "bg-navy-900 text-white"
-                  : "bg-white text-navy-800 border border-navy-200 hover:border-navy-400"
+                  ? recruit
+                    ? "bg-burgundy-700 text-white"
+                    : "bg-navy-900 text-white"
+                  : recruit
+                    ? "bg-burgundy-50 text-burgundy-800 border border-burgundy-200 hover:border-burgundy-400"
+                    : "bg-white text-navy-800 border border-navy-200 hover:border-navy-400"
               )}
             >
               <Icon size={15} />
@@ -101,8 +152,12 @@ export function ApplicationsTabs() {
                   className={cn(
                     "ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
                     selected
-                      ? "bg-emerald-400 text-emerald-950"
-                      : "bg-emerald-100 text-emerald-700"
+                      ? kind === "native"
+                        ? "bg-white text-burgundy-700"
+                        : "bg-emerald-400 text-emerald-950"
+                      : kind === "native"
+                        ? "bg-burgundy-700 text-white"
+                        : "bg-emerald-100 text-emerald-700"
                   )}
                 >
                   {badge}
@@ -140,8 +195,10 @@ export function ApplicationsTabs() {
               loading="lazy"
             />
           </div>
-        ) : (
+        ) : current.kind === "workstudio" ? (
           <WorkStudioBrowser />
+        ) : (
+          <RecruitApplyForm />
         )}
       </div>
 
